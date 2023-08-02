@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title>List of Patients</title>
+  <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+</head>
+<body>
+<div class="container">
+  <div class="row"><h2>List of Patients</h2></div>
+  <div class="row">
+    <a href="/addPatient" class="btn btn-primary btn-sm">Add New</a>
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Id</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Birthdate</th>
+        <th>Gender</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="patient : ${patients}">
+        <td style="width: 10%" th:text="${patient.id}"></td>
+        <td th:text="${patient.firstName}"></td>
+        <td th:text="${patient.lastName}"></td>
+        <td th:text="${patient.birthdate}"></td>
+        <td th:text="${patient.gender}"></td>
+        <td th:text="${patient.address}"></td>
+        <td th:text="${patient.phone}"></td>
+        <td style="width: 15%" class="text-center">
+          <a th:href="@{/bidList/update/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
+          <a th:href="@{/bidList/delete/{id}(id=${patient.id})}">Delete</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div th:if="${#fields.allErrors()}">
+      <div class="error" th:text="${error}"></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
