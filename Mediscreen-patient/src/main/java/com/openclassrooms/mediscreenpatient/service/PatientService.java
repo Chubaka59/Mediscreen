@@ -38,4 +38,9 @@ public class PatientService {
         Patient updatedPatient = getPatientById(id).update(patientDto);
         return patientRepository.save(updatedPatient);
     }
+
+    public void deletePatient(Integer id) {
+        Patient patient = getPatientById(id);
+        patientRepository.delete(patient);
+    }
 }

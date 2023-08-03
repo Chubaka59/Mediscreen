@@ -20,4 +20,7 @@ public interface PatientProxy {
 
     @PutMapping("/patients/{id}")
     ResponseEntity<PatientBean> updatePatient(@RequestBody PatientBean patient, @PathVariable Integer id);
+
+    @GetMapping(value = "/patients/{id}/delete")
+    ResponseEntity<PatientBean> deletePatient(@PathVariable Integer id);
 }

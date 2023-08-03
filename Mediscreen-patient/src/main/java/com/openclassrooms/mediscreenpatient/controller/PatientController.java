@@ -36,4 +36,10 @@ public class PatientController {
         patientService.updatePatient(id, patientDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping(value = "/patients/{id}/delete")
+    public ResponseEntity<Patient> deletePatient(@PathVariable("id") Integer id){
+        patientService.deletePatient(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

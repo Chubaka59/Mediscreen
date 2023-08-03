@@ -61,4 +61,11 @@ public class ClientUIController {
         }
         return "updatePatientPage";
     }
+
+    @GetMapping("patients/{id}/delete")
+    public String deletePatient(@PathVariable("id") Integer id, Model model){
+        patientProxy.deletePatient(id);
+        model.addAttribute("patients", patientProxy.getallPatients());
+        return "patientListPage";
+    }
 }
