@@ -20,7 +20,7 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
-    public Patient getPatient(int id){
+    public Patient getPatientById(int id){
         return patientRepository.findById(id)
                 .orElseThrow(() -> new PatientNotFoundException(id));
     }
@@ -32,5 +32,10 @@ public class PatientService {
         }
         Patient newPatient = new Patient(patientDto);
         return patientRepository.save(newPatient);
+    }
+
+    public Patient updatePatient(Integer id, PatientDto patientDto) {
+        Patient updatedPatient = getPatientById(id).update(patientDto);
+        return patientRepository.save(updatedPatient);
     }
 }

@@ -3,10 +3,7 @@ package com.openclassrooms.mediscreenclientui.proxy;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,4 +17,7 @@ public interface PatientProxy {
 
     @PostMapping(value = "patients")
     ResponseEntity<PatientBean> addPatient(@RequestBody PatientBean patient);
+
+    @PutMapping("/patients/{id}")
+    ResponseEntity<PatientBean> updatePatient(@RequestBody PatientBean patient, @PathVariable Integer id);
 }

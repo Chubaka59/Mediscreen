@@ -36,4 +36,14 @@ public class Patient {
         this.address = patientDto.getAddress();
         this.phone = patientDto.getPhone();
     }
+
+    public Patient update(PatientDto patientDto){
+        this.firstName = patientDto.getFirstName();
+        this.lastName = patientDto.getLastName();
+        this.birthdate = patientDto.getBirthdate();
+        this.gender = patientDto.getGender();
+        this.address = patientDto.getAddress();
+        this.phone = patientDto.getPhone();
+        return this;
+    }
 }

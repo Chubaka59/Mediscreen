@@ -22,12 +22,18 @@ public class PatientController {
 
     @GetMapping(value = "/patients/{id}")
     public Patient getPatient(@PathVariable int id){
-        return patientService.getPatient(id);
+        return patientService.getPatientById(id);
     }
 
     @PostMapping(value = "/patients")
     public ResponseEntity<PatientDto> addPatient(@RequestBody PatientDto patient){
         patientService.addPatient(patient);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/patients/{id}")
+    public ResponseEntity<PatientDto> updatePatient(@PathVariable("id") Integer id, @RequestBody PatientDto patientDto){
+        patientService.updatePatient(id, patientDto);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

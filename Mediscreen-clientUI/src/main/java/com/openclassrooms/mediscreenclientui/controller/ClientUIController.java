@@ -25,15 +25,8 @@ public class ClientUIController {
         return "patientListPage";
     }
 
-    @RequestMapping("/patients/{id}")
-    public String getPatient(@PathVariable int id, Model model){
-        PatientBean patientBean = patientProxy.getPatient(id);
-        model.addAttribute("patient", patientBean);
-        return "patientPage";
-    }
-
     @GetMapping("/addPatient")
-    public String addPatientPage(PatientBean patient){
+    public String showAddPage(PatientBean patient){
         return "addPatientPage";
     }
 
@@ -48,5 +41,24 @@ public class ClientUIController {
             return "patientListPage";
         }
         return "addPatientPage";
+    }
+
+    @GetMapping("/patients/{id}")
+    public String showUpdatePage(@PathVariable("id") Integer id, Model model){
+        model.addAttribute("patient", patientProxy.getPatient(id));
+        return "updatePatientPage";
+    }
+
+    @PostMapping("/patients/{id}")
+    public String updatePatient(@PathVariable("id") Integer id, @Valid PatientBean patient, BindingResult result, Model model){
+        if (result.hasErrors()){
+            return "updatePatientPage";
+        }
+        ResponseEntity<PatientBean> response = patientProxy.updatePatient(patient, id);
+        if (response.getStatusCode() == HttpStatus.OK){
+            model.addAttribute("patients", patientProxy.getallPatients());
+            return "patientListPage";
+        }
+        return "updatePatientPage";
     }
 }
