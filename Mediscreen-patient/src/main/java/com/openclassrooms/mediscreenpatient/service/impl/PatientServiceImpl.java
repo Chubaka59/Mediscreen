@@ -6,6 +6,7 @@ import com.openclassrooms.mediscreenpatient.exception.PatientNotFoundException;
 import com.openclassrooms.mediscreenpatient.model.Patient;
 import com.openclassrooms.mediscreenpatient.repository.PatientRepository;
 import com.openclassrooms.mediscreenpatient.service.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
     @Autowired
-    private PatientRepository patientRepository;
+    private final PatientRepository patientRepository;
 
     public List<Patient> getAllPatient(){
         return patientRepository.findAll();
