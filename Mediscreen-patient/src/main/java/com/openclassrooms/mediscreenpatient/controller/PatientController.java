@@ -3,6 +3,7 @@ package com.openclassrooms.mediscreenpatient.controller;
 import com.openclassrooms.mediscreenpatient.dto.PatientDto;
 import com.openclassrooms.mediscreenpatient.model.Patient;
 import com.openclassrooms.mediscreenpatient.service.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class PatientController {
     @Autowired
-    private PatientService patientService;
+    private final PatientService patientService;
 
     @GetMapping(value = "/patients")
     public List<Patient> getAllPatients(){
