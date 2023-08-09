@@ -21,7 +21,7 @@ public class ClientUIController {
 
     @RequestMapping("/patients")
     public String getAllPatients(Model model){
-        model.addAttribute("patients", patientProxy.getallPatients());
+        model.addAttribute("patients", patientProxy.getAllPatients());
         return "patientListPage";
     }
 
@@ -37,7 +37,7 @@ public class ClientUIController {
         }
         ResponseEntity<PatientBean> response = patientProxy.addPatient(patient);
         if(response.getStatusCode() == HttpStatus.CREATED){
-            model.addAttribute("patients", patientProxy.getallPatients());
+            model.addAttribute("patients", patientProxy.getAllPatients());
             return "patientListPage";
         }
         return "addPatientPage";
@@ -56,7 +56,7 @@ public class ClientUIController {
         }
         ResponseEntity<PatientBean> response = patientProxy.updatePatient(patient, id);
         if (response.getStatusCode() == HttpStatus.OK){
-            model.addAttribute("patients", patientProxy.getallPatients());
+            model.addAttribute("patients", patientProxy.getAllPatients());
             return "patientListPage";
         }
         return "updatePatientPage";
@@ -65,7 +65,7 @@ public class ClientUIController {
     @GetMapping("patients/{id}/delete")
     public String deletePatient(@PathVariable("id") Integer id, Model model){
         patientProxy.deletePatient(id);
-        model.addAttribute("patients", patientProxy.getallPatients());
+        model.addAttribute("patients", patientProxy.getAllPatients());
         return "patientListPage";
     }
 }
