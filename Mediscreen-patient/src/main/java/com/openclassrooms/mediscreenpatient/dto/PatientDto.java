@@ -18,7 +18,7 @@ public class PatientDto {
     private String lastName;
     @NotNull
     private LocalDate birthdate;
-    @NotBlank
+    @NotNull
     private String gender;
     private String address;
     private String phone;

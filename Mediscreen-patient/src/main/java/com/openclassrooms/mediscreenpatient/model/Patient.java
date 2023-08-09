@@ -25,8 +25,10 @@ public class Patient {
     private String lastName;
     @NotNull
     private LocalDate birthdate;
-    @NotBlank
-    private String gender;
+    @NotNull
+    @Column(columnDefinition = "ENUM('MALE', 'FEMALE')")
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private String address;
     private String phone;
 
@@ -34,7 +36,7 @@ public class Patient {
         this.firstName = patientDto.getFirstName();
         this.lastName = patientDto.getLastName();
         this.birthdate = patientDto.getBirthdate();
-        this.gender = patientDto.getGender();
+        this.gender = Gender.valueOf(patientDto.getGender());
         this.address = patientDto.getAddress();
         this.phone = patientDto.getPhone();
     }
@@ -43,7 +45,7 @@ public class Patient {
         this.firstName = patientDto.getFirstName();
         this.lastName = patientDto.getLastName();
         this.birthdate = patientDto.getBirthdate();
-        this.gender = patientDto.getGender();
+        this.gender = Gender.valueOf(patientDto.getGender());
         this.address = patientDto.getAddress();
         this.phone = patientDto.getPhone();
         return this;
