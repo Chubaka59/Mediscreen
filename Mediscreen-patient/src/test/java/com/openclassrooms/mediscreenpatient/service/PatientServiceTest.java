@@ -71,7 +71,7 @@ public class PatientServiceTest {
     public void addPatientTest(){
         //GIVEN the patient we would add doesn't exist
         when(patientRepository.findPatientByFirstNameAndLastName(anyString(), anyString())).thenReturn(Optional.empty());
-        PatientDto patientDto = new PatientDto("firstName", "lastName", LocalDate.now(), "gender", "address", "phone");
+        PatientDto patientDto = new PatientDto("firstName", "lastName", LocalDate.now(), "M", "address", "phone");
         Patient patient = new Patient();
         when(patientRepository.save(any(Patient.class))).thenReturn(patient);
 
@@ -98,7 +98,7 @@ public class PatientServiceTest {
         //GIVEN there is a patient to update
         Patient existingPatient = new Patient();
         when(patientRepository.findById(anyInt())).thenReturn(Optional.of(existingPatient));
-        PatientDto patientDto = new PatientDto();
+        PatientDto patientDto = new PatientDto("firstName", "lastName", LocalDate.now(), "M", "address", "phone");
 
         //WHEN we try to update the patient
         patientService.updatePatient(1, patientDto);
