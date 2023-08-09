@@ -45,16 +45,17 @@ public class ClientUIController {
 
     @GetMapping("/patients/{id}")
     public String showUpdatePage(@PathVariable("id") Integer id, Model model){
-        model.addAttribute("patient", patientProxy.getPatient(id));
+        model.addAttribute("patientBean", patientProxy.getPatient(id));
         return "updatePatientPage";
     }
 
     @PostMapping("/patients/{id}")
-    public String updatePatient(@PathVariable("id") Integer id, @Valid PatientBean patient, BindingResult result, Model model){
+    public String updatePatient(@PathVariable("id") Integer id, @Valid PatientBean patientBean,
+                                BindingResult result, Model model){
         if (result.hasErrors()){
             return "updatePatientPage";
         }
-        ResponseEntity<PatientBean> response = patientProxy.updatePatient(patient, id);
+        ResponseEntity<PatientBean> response = patientProxy.updatePatient(patientBean, id);
         if (response.getStatusCode() == HttpStatus.OK){
             model.addAttribute("patients", patientProxy.getAllPatients());
             return "patientListPage";
