@@ -6,6 +6,7 @@ import com.openclassrooms.mediscreenpatient.exception.PatientNotFoundException;
 import com.openclassrooms.mediscreenpatient.model.Patient;
 import com.openclassrooms.mediscreenpatient.repository.PatientRepository;
 import com.openclassrooms.mediscreenpatient.service.PatientService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PatientServiceImpl implements PatientService {
     @Autowired
     private final PatientRepository patientRepository;

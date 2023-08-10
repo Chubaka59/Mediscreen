@@ -26,7 +26,6 @@ public class Patient {
     @NotNull
     private LocalDate birthdate;
     @NotNull
-    @Column(columnDefinition = "ENUM('MALE', 'FEMALE')")
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String address;

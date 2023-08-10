@@ -1,0 +1,1 @@
+insert into patient(first_name, last_name, birthdate, gender, address, phone) values('existingFirstName', 'existingLastName', '2000-01-01', 'M', 'existingAddress', 'existingPhone');
