@@ -7,7 +7,9 @@ import com.openclassrooms.mediscreenpatientnote.service.PatientNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PatientNoteServiceImpl implements PatientNoteService {
@@ -15,8 +17,16 @@ public class PatientNoteServiceImpl implements PatientNoteService {
     private PatientNoteRepository patientNoteRepository;
 
     public List<Note> getNoteListByPatientId(int id){
-        PatientNote patientNote = patientNoteRepository.findByPatientId(id).orElseThrow();
-        return patientNote.getNoteList();
+        Optional<PatientNote> existingPatientNote = patientNoteRepository.findByPatientId(id);
+        if (existingPatientNote.isEmpty()) {
+            PatientNote patientNote = new PatientNote();
+            patientNote.setPatientId(id);
+            patientNote.setNoteList(new ArrayList<>());
+            patientNoteRepository.save(patientNote);
+            return new ArrayList<>();
+        } else {
+            return existingPatientNote.get().getNoteList();
+        }
     }
 
     public void addNoteToAPatient(Note note, Integer id){
