@@ -21,6 +21,7 @@
         <th>Gender</th>
         <th>Address</th>
         <th>Phone</th>
+        <th>Notes</th>
         <th>Action</th>
       </tr>
       </thead>
@@ -33,6 +34,9 @@
         <td th:text="${patient.gender}"></td>
         <td th:text="${patient.address}"></td>
         <td th:text="${patient.phone}"></td>
+        <td class="text-center">
+          <a th:href="@{/patients/{id}/notes(id=${patient.id})}">Notes</a>
+        </td>
         <td style="width: 15%" class="text-center">
           <a th:href="@{/patients/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
           <a th:href="@{/patients/{id}/delete(id=${patient.id})}">Delete</a>

@@ -1,6 +1,8 @@
 package com.openclassrooms.mediscreenclientui.controller;
 
+import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
+import com.openclassrooms.mediscreenclientui.proxy.PatientNoteProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientProxy;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ClientUIController {
     @Autowired
     private PatientProxy patientProxy;
+    @Autowired
+    private PatientNoteProxy patientNoteProxy;
 
     @RequestMapping("/patients")
     public String getAllPatients(Model model){
@@ -68,5 +72,25 @@ public class ClientUIController {
         patientProxy.deletePatient(id);
         model.addAttribute("patients", patientProxy.getAllPatients());
         return "patientListPage";
+    }
+
+    @GetMapping("/patients/{id}/notes")
+    public String showPatientNotePage(@PathVariable("id") Integer id, NoteBean note, Model model){
+        model.addAttribute("patientBean", patientProxy.getPatient(id));
+        model.addAttribute("notes", patientNoteProxy.getAllPatientNote(id));
+        return "patientNotePage";
+    }
+
+    @PostMapping("/patients/{id}/notes")
+    public String addNote(@PathVariable("id") Integer id, @Valid NoteBean note, BindingResult result, Model model){
+        if (result.hasErrors()){
+            return "patientNotePage";
+        }
+        ResponseEntity<String> response = patientNoteProxy.addNote(note, id);
+        if(response.getStatusCode() == HttpStatus.CREATED){
+            model.addAttribute("patients", patientProxy.getAllPatients());
+            return "patientListPage";
+        }
+        return "patientNotePage";
     }
 }
