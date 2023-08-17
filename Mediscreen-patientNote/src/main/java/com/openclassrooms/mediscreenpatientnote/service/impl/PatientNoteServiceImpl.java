@@ -19,10 +19,7 @@ public class PatientNoteServiceImpl implements PatientNoteService {
     public List<Note> getNoteListByPatientId(int id){
         Optional<PatientNote> existingPatientNote = patientNoteRepository.findByPatientId(id);
         if (existingPatientNote.isEmpty()) {
-            PatientNote patientNote = new PatientNote();
-            patientNote.setPatientId(id);
-            patientNote.setNoteList(new ArrayList<>());
-            patientNoteRepository.save(patientNote);
+            createNewPatientNote(id);
             return new ArrayList<>();
         } else {
             return existingPatientNote.get().getNoteList();
@@ -30,8 +27,18 @@ public class PatientNoteServiceImpl implements PatientNoteService {
     }
 
     public void addNoteToAPatient(Note note, Integer id){
-        PatientNote patientNote = patientNoteRepository.findByPatientId(id).orElseThrow();
-        patientNote.getNoteList().add(note);
-        patientNoteRepository.save(patientNote);
+        Optional<PatientNote> existingPatientNote = patientNoteRepository.findByPatientId(id);
+        if (existingPatientNote.isEmpty()) {
+            existingPatientNote = Optional.of(createNewPatientNote(id));
+        }
+        existingPatientNote.get().getNoteList().add(note);
+        patientNoteRepository.save(existingPatientNote.get());
+    }
+
+    private PatientNote createNewPatientNote(int id) {
+        PatientNote patientNote = new PatientNote();
+        patientNote.setPatientId(id);
+        patientNote.setNoteList(new ArrayList<>());
+        return patientNoteRepository.save(patientNote);
     }
 }
