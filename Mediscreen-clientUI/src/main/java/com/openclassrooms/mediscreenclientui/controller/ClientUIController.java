@@ -88,13 +88,13 @@ public class ClientUIController {
     @PostMapping("/patients/{id}/notes")
     public String addNote(@PathVariable("id") Integer id, @Valid NoteBean note, BindingResult result, Model model){
         if (result.hasErrors()){
-            return "patientNotePage";
+            return showPatientNotePage(id, note, model);
         }
         ResponseEntity<String> response = patientNoteProxy.addNote(note, id);
         if(response.getStatusCode() == HttpStatus.CREATED){
             model.addAttribute("patients", patientProxy.getAllPatients());
             return "patientListPage";
         }
-        return "patientNotePage";
+        return showPatientNotePage(id, note, model);
     }
 }

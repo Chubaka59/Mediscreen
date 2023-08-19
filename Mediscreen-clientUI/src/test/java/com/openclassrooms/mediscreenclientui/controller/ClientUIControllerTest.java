@@ -1,6 +1,8 @@
 package com.openclassrooms.mediscreenclientui.controller;
 
+import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
+import com.openclassrooms.mediscreenclientui.proxy.PatientNoteProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientProxy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,9 +14,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -23,6 +27,8 @@ public class ClientUIControllerTest {
     ClientUIController clientUIController;
     @Mock
     PatientProxy patientProxy;
+    @Mock
+    PatientNoteProxy patientNoteProxy;
     @Mock
     Model model;
     @Mock
@@ -160,6 +166,58 @@ public class ClientUIControllerTest {
 
         //WHEN we call the method
         String actualString = clientUIController.deletePatient(1, model);
+
+        //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void showPatientNotePageTest(){
+        //GIVEN we should get this string
+        String expectedString = "patientNotePage";
+        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
+
+        //WHEN we call the method
+        String actualString = clientUIController.showPatientNotePage(1, new NoteBean(), model);
+
+        //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void addNoteTest(){
+        //GIVEN we should get this string
+        String expectedString = "patientListPage";
+        when(patientNoteProxy.addNote(any(NoteBean.class), anyInt())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(201)));
+
+        //WHEN we call the method
+        String actualString = clientUIController.addNote(1, new NoteBean(), result, model);
+
+        //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void addNoteWhenErrorInTheFormTest(){
+        //GIVEN we should get this string
+        String expectedString = "patientNotePage";
+        when(result.hasErrors()).thenReturn(true);
+
+        //WHEN we call the method
+        String actualString = clientUIController.addNote(1, new NoteBean(), result, model);
+
+        //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void addNoteWhenNoteIsNotCreatedTest(){
+        //GIVEN we should get this string
+        String expectedString = "patientNotePage";
+        when(patientNoteProxy.addNote(any(NoteBean.class), anyInt())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(409)));
+
+        //WHEN we call the method
+        String actualString = clientUIController.addNote(1, new NoteBean(), result, model);
 
         //THEN we get the correct String
         assertEquals(expectedString, actualString);
