@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 public class ClientUIController {
     @Autowired
@@ -76,8 +78,10 @@ public class ClientUIController {
 
     @GetMapping("/patients/{id}/notes")
     public String showPatientNotePage(@PathVariable("id") Integer id, NoteBean note, Model model){
+        List<NoteBean> noteBeanList = patientNoteProxy.getAllPatientNote(id);
+        noteBeanList.forEach(s -> s.setNote(s.getNote().replaceAll("\r\n", "<br />")));
         model.addAttribute("patientBean", patientProxy.getPatient(id));
-        model.addAttribute("notes", patientNoteProxy.getAllPatientNote(id));
+        model.addAttribute("notes", noteBeanList);
         return "patientNotePage";
     }
 
