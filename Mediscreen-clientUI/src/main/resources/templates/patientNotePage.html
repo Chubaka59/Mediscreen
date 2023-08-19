@@ -40,7 +40,7 @@
       </thead>
       <tbody>
       <tr th:each="note : ${notes}">
-        <td><span th:text="${note.note}"> Title </span></td>
+        <td><span th:utext="${note.note}"> Title </span></td>
       </tr>
       </tbody>
     </table>
