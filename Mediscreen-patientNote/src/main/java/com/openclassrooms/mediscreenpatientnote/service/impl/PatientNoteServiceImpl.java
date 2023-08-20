@@ -4,17 +4,21 @@ import com.openclassrooms.mediscreenpatientnote.model.Note;
 import com.openclassrooms.mediscreenpatientnote.model.PatientNote;
 import com.openclassrooms.mediscreenpatientnote.repository.PatientNoteRepository;
 import com.openclassrooms.mediscreenpatientnote.service.PatientNoteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class PatientNoteServiceImpl implements PatientNoteService {
     @Autowired
-    private PatientNoteRepository patientNoteRepository;
+    private final PatientNoteRepository patientNoteRepository;
 
     public List<Note> getNoteListByPatientId(int id){
         Optional<PatientNote> existingPatientNote = patientNoteRepository.findByPatientId(id);
