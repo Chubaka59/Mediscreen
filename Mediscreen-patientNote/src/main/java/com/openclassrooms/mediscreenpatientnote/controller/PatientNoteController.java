@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientNoteController {
     @Autowired
-    private PatientNoteService patientNoteService;
+    private final PatientNoteService patientNoteService;
 
     @GetMapping(value = "/patients/{id}/notes")
     public List<Note> getNoteListByPatientId(@PathVariable int id){
