@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +43,7 @@ public class PatientNoteControllerTest {
         doNothing().when(patientNoteService).addNoteToAPatient(any(Note.class), anyInt());
 
         //WHEN we call this method
-        ResponseEntity<Note> actualResponse = patientNoteController.addNote(new Note("test"), 1);
+        ResponseEntity<Note> actualResponse = patientNoteController.addNote(new Note(null, null, LocalDateTime.now(), "test"), 1);
 
         //THEN we get the correct response
         assertEquals(HttpStatusCode.valueOf(201), actualResponse.getStatusCode());

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Note {
     @Id
     private String id;
-    private int patientId;
+    private Integer patientId;
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime date;
     private String note;

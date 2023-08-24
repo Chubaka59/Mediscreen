@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -160,9 +161,10 @@ public class ClientUIIT {
     @Test
     public void showPatientNotePageTest() throws Exception {
         when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
-        NoteBean existingNoteBean = new NoteBean("\r\n");
+        LocalDateTime date = LocalDateTime.now();
+        NoteBean existingNoteBean = new NoteBean(1, date, "\r\n");
         when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(List.of(existingNoteBean));
-        NoteBean expectedNoteBean = new NoteBean("<br />");
+        NoteBean expectedNoteBean = new NoteBean(1, date, "<br />");
 
         mockMvc.perform(get("/patients/1/notes"))
                 .andDo(MockMvcResultHandlers.print())
