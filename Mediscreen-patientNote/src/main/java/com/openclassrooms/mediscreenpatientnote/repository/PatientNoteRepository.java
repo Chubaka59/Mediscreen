@@ -1,12 +1,12 @@
 package com.openclassrooms.mediscreenpatientnote.repository;
 
-import com.openclassrooms.mediscreenpatientnote.model.PatientNote;
+import com.openclassrooms.mediscreenpatientnote.model.Note;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface PatientNoteRepository extends MongoRepository<PatientNote, String> {
-    Optional<PatientNote> findByPatientId(Integer id);
+public interface PatientNoteRepository extends MongoRepository<Note, String> {
+    List<Note> findAllByPatientIdOrderByDateDesc(Integer id);
 }

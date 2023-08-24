@@ -1,7 +1,6 @@
 package com.openclassrooms.mediscreenpatientnote.service;
 
 import com.openclassrooms.mediscreenpatientnote.model.Note;
-import com.openclassrooms.mediscreenpatientnote.model.PatientNote;
 import com.openclassrooms.mediscreenpatientnote.repository.PatientNoteRepository;
 import com.openclassrooms.mediscreenpatientnote.service.impl.PatientNoteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
