@@ -21,14 +21,15 @@ public class PatientNoteServiceImpl implements PatientNoteService {
         return patientNoteRepository.findAllByPatientIdOrderByDateDesc(id);
     }
 
-    public void addNoteToAPatient(Note note, Integer id){
+    public Note addNoteToAPatient(Note note, Integer id){
         note.setPatientId(id);
         note.setDate(LocalDateTime.now());
-        patientNoteRepository.save(note);
+        return patientNoteRepository.save(note);
     }
 
     public Note getNoteById(String id) {
-        return patientNoteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+        Note note = patientNoteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+        return note;
     }
 
     public Note updateNote(String id, String note) {

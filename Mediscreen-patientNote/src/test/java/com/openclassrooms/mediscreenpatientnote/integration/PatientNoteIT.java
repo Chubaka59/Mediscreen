@@ -4,27 +4,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.mediscreenpatientnote.model.Note;
 import com.openclassrooms.mediscreenpatientnote.repository.PatientNoteRepository;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class PatientNoteIT {
     @Autowired
     private MockMvc mockMvc;
@@ -32,6 +31,12 @@ public class PatientNoteIT {
     private PatientNoteRepository patientNoteRepository;
     @Autowired
     private ObjectMapper mapper;
+
+    @AfterEach
+    public void cleanUpPerTest() {
+        //remove test entries
+        patientNoteRepository.deleteAll();
+    }
 
     @Test
     public void getNoteListByPatientIdTest() throws Exception {
@@ -50,9 +55,6 @@ public class PatientNoteIT {
         //THEN we get the notes as return
         String result = mvcResult.getResponse().getContentAsString();
         assertTrue(result.contains(existingNote1.getNote()) && result.contains(existingNote2.getNote()));
-
-        //remove test entries
-        patientNoteRepository.deleteAll();
     }
 
     @Test
@@ -67,11 +69,42 @@ public class PatientNoteIT {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isCreated());
 
-        System.out.println(patientNoteRepository.findAll());
         assertEquals(initialCount + 1, patientNoteRepository.findAll().size());
+    }
 
-        //remove test entries
-        patientNoteRepository.deleteAll();
+    @Test
+    public void getNoteByIdTest() throws Exception {
+        Note existingNote = new Note("testId", 1, LocalDateTime.now(), "testNote");
+        patientNoteRepository.save(existingNote);
+
+        MvcResult result = mockMvc.perform(get("/patients/1/notes/testId"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(result.getResponse().getContentAsString()).contains(existingNote.getNote());
+    }
+
+    @Test
+    public void getNoteByIdWhenNoteIsNotFoundTest() throws Exception {
+        mockMvc.perform(get("/patients/1/notes/testId"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void updateNoteTest() throws Exception {
+        Note existingNote = new Note("testId", 1, LocalDateTime.now(), "testNote");
+        patientNoteRepository.save(existingNote);
+
+        mockMvc.perform(put("/patients/1/notes/testId")
+                        .content("updatedNote")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk());
+
+        Note actualNote = patientNoteRepository.findById("testId").orElseThrow();
+        assertEquals("updatedNote", actualNote.getNote());
     }
 
     @SneakyThrows

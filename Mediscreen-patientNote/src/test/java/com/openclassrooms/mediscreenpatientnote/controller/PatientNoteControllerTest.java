@@ -40,7 +40,7 @@ public class PatientNoteControllerTest {
     @Test
     public void addNoteTest(){
         //GIVEN a note will be added
-        doNothing().when(patientNoteService).addNoteToAPatient(any(Note.class), anyInt());
+        when(patientNoteService.addNoteToAPatient(any(Note.class), anyInt())).thenReturn(new Note());
 
         //WHEN we call this method
         ResponseEntity<Note> actualResponse = patientNoteController.addNote(new Note(null, null, LocalDateTime.now(), "test"), 1);
@@ -48,6 +48,31 @@ public class PatientNoteControllerTest {
         //THEN we get the correct response
         assertEquals(HttpStatusCode.valueOf(201), actualResponse.getStatusCode());
         verify(patientNoteService, times(1)).addNoteToAPatient(any(Note.class), anyInt());
+    }
 
+    @Test
+    public void getNoteByIdTest() {
+        //GIVEN we should call this method
+        when(patientNoteService.getNoteById(anyString())).thenReturn(new Note());
+
+        //WHEN we call the method
+        patientNoteController.getNoteById(1, "test");
+
+        //THEN the correct method is called
+        verify(patientNoteService, times(1)).getNoteById(anyString());
+    }
+
+    @Test
+    public void updateNoteTest() {
+        //GIVEN we should get this response
+        ResponseEntity<Note> expectedResponse = new ResponseEntity<>(HttpStatusCode.valueOf(200));
+        when(patientNoteService.updateNote(anyString(), anyString())).thenReturn(new Note());
+
+        //WHEN we call the method
+        ResponseEntity<Note> actualResponse = patientNoteController.updateNote(1, "testId", "testnote");
+
+        //THEN the correct method is called and we get the correct response
+        assertEquals(expectedResponse, actualResponse);
+        verify(patientNoteService, times(1)).updateNote(anyString(), anyString());
     }
 }

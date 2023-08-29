@@ -266,7 +266,7 @@ public class ClientUIControllerTest {
     @Test
     public void updateNoteWhenNoteIsNotUpdatedTest() {
         //GIVEN we should get this string
-        String expectedString = "patientNotePage";
+        String expectedString = "updateNotePage";
         when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(404)));
         NoteBean noteBean = new NoteBean("1", 1, LocalDateTime.now(), "test");
 
