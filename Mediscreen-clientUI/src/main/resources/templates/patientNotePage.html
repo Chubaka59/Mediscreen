@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8"/>
   <title>Patient's note</title>
-  <link rel="stylesheet" href="../../css/bootstrap.min.css" >
+  <link rel="stylesheet" href="/css/bootstrap.min.css" >
 </head>
 <body>
 <div class="container">
@@ -37,12 +37,16 @@
       <tr>
         <th> Date </th>
         <th> Notes </th>
+        <th> Action </th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="note : ${notes}">
         <td style="width: 25%" th:text="${note.date}"></td>
         <td th:utext="${note.note}"></td>
+        <td style="width: 10%" class="text-center">
+          <a th:href="@{/patients/{patientId}/notes/{noteId}(patientId=${note.patientId}, noteId=${note.id})}">Update</a>
+        </td>
       </tr>
       </tbody>
     </table>

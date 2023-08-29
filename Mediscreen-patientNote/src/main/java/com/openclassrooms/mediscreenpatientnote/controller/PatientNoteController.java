@@ -26,4 +26,15 @@ public class PatientNoteController {
         patientNoteService.addNoteToAPatient(note, id);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @GetMapping(value = "/patients/{patientId}/notes/{noteId}")
+    public Note getNoteById(@PathVariable("patientId") Integer patientId, @PathVariable("noteId") String noteId) {
+        return patientNoteService.getNoteById(noteId);
+    }
+
+    @PutMapping(value = "/patients/{patientId}/notes/{noteId}")
+    public ResponseEntity<Note> updateNote(@PathVariable("patientId") Integer patientId, @PathVariable("noteId") String noteId, @RequestBody String note) {
+        patientNoteService.updateNote(noteId, note);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

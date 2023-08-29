@@ -1,19 +1,18 @@
 package com.openclassrooms.mediscreenpatientnote.service.impl;
 
+import com.openclassrooms.mediscreenpatientnote.exception.NoteNotFoundException;
 import com.openclassrooms.mediscreenpatientnote.model.Note;
 import com.openclassrooms.mediscreenpatientnote.repository.PatientNoteRepository;
 import com.openclassrooms.mediscreenpatientnote.service.PatientNoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PatientNoteServiceImpl implements PatientNoteService {
     @Autowired
     private final PatientNoteRepository patientNoteRepository;
@@ -26,5 +25,14 @@ public class PatientNoteServiceImpl implements PatientNoteService {
         note.setPatientId(id);
         note.setDate(LocalDateTime.now());
         patientNoteRepository.save(note);
+    }
+
+    public Note getNoteById(String id) {
+        return patientNoteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(id));
+    }
+
+    public Note updateNote(String id, String note) {
+        Note updatedNote = getNoteById(id).update(note);
+        return patientNoteRepository.save(updatedNote);
     }
 }

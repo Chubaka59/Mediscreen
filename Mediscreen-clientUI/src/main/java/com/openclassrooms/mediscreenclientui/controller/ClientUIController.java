@@ -78,9 +78,10 @@ public class ClientUIController {
 
     @GetMapping("/patients/{id}/notes")
     public String showPatientNotePage(@PathVariable("id") Integer id, NoteBean note, Model model){
+        PatientBean patientBean = patientProxy.getPatient(id);
         List<NoteBean> noteBeanList = patientNoteProxy.getAllPatientNote(id);
         noteBeanList.forEach(s -> s.setNote(s.getNote().replaceAll("\r\n", "<br />")));
-        model.addAttribute("patientBean", patientProxy.getPatient(id));
+        model.addAttribute("patientBean", patientBean);
         model.addAttribute("notes", noteBeanList);
         return "patientNotePage";
     }
@@ -96,5 +97,25 @@ public class ClientUIController {
             return "patientListPage";
         }
         return showPatientNotePage(id, note, model);
+    }
+
+    @GetMapping("/patients/{patientId}/notes/{noteId}")
+    public String showUpdateNotePage(@PathVariable("patientId") Integer patientId, @PathVariable("noteId") String noteId, Model model) {
+        model.addAttribute("noteBean", patientNoteProxy.getNoteById(patientId, noteId));
+        return "updateNotePage";
+    }
+
+    @PostMapping("/patients/{patientId}/notes/{noteId}")
+    public String updateNote(@PathVariable("patientId") Integer patientId, @PathVariable("noteId") String noteId, @Valid NoteBean noteBean,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()){
+            return "updateNotePage";
+        }
+        ResponseEntity<String> response = patientNoteProxy.updateNote(patientId, noteId, noteBean.getNote());
+        if (response.getStatusCode() == HttpStatus.OK){
+            model.addAttribute("patients", patientProxy.getAllPatients());
+            return "patientListPage";
+        }
+        return "patientNotePage";
     }
 }
