@@ -14,11 +14,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -220,6 +220,60 @@ public class ClientUIControllerTest {
         String actualString = clientUIController.addNote(1, new NoteBean(), result, model);
 
         //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void showUpdateNotePageTest() {
+        //GIVEN we should get this string
+        String expectedString = "updateNotePage";
+        when(patientNoteProxy.getNoteById(anyInt(), anyString())).thenReturn(new NoteBean());
+
+        //WHEN we call the method
+        String actualString = clientUIController.showUpdateNotePage(1, "1", model);
+
+        //THEN we get the correct String
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void updateNoteTest() {
+        //GIVEN we should get this string
+        String expectedString = "patientListPage";
+        when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(200)));
+        NoteBean noteBean = new NoteBean("1", 1, LocalDateTime.now(), "test");
+
+        //WHEN we call the method
+        String actualString = clientUIController.updateNote(1, "1", noteBean, result, model);
+
+        //THEN we get the correct string
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void updateNoteWhenErrorInTheFormTest() {
+        //GIVEN we should get this string
+        String expectedString = "updateNotePage";
+        when(result.hasErrors()).thenReturn(true);
+
+        //WHEN we call the method
+        String actualString = clientUIController.updateNote(1, "1", new NoteBean(), result, model);
+
+        //THEN we get the correct string
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void updateNoteWhenNoteIsNotUpdatedTest() {
+        //GIVEN we should get this string
+        String expectedString = "patientNotePage";
+        when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(404)));
+        NoteBean noteBean = new NoteBean("1", 1, LocalDateTime.now(), "test");
+
+        //WHEN we call the method
+        String actualString = clientUIController.updateNote(1, "1", noteBean, result, model);
+
+        //THEN we get the correct string
         assertEquals(expectedString, actualString);
     }
 }

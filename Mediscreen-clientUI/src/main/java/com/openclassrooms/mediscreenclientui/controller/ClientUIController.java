@@ -116,6 +116,6 @@ public class ClientUIController {
             model.addAttribute("patients", patientProxy.getAllPatients());
             return "patientListPage";
         }
-        return "patientNotePage";
+        return "updateNotePage";
     }
 }

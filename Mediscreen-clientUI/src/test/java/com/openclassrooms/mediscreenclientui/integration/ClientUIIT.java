@@ -17,8 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -162,9 +161,9 @@ public class ClientUIIT {
     public void showPatientNotePageTest() throws Exception {
         when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
         LocalDateTime date = LocalDateTime.now();
-        NoteBean existingNoteBean = new NoteBean(1, date, "\r\n");
+        NoteBean existingNoteBean = new NoteBean("1", 1, date, "\r\n");
         when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(List.of(existingNoteBean));
-        NoteBean expectedNoteBean = new NoteBean(1, date, "<br />");
+        NoteBean expectedNoteBean = new NoteBean("1", 1, date, "<br />");
 
         mockMvc.perform(get("/patients/1/notes"))
                 .andDo(MockMvcResultHandlers.print())
@@ -203,9 +202,56 @@ public class ClientUIIT {
         when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
 
         mockMvc.perform(post("/patients/1/notes")
-                .param("note", "note"))
+                        .param("note", "note")
+                )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(view().name("patientNotePage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void showUpdateNotePageTest() throws Exception {
+        when(patientNoteProxy.getNoteById(anyInt(), anyString())).thenReturn(new NoteBean());
+
+        mockMvc.perform(get("/patients/1/notes/testNote"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(model().attributeExists("noteBean"))
+                .andExpect(view().name("updateNotePage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateNoteTest() throws Exception {
+        when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(200)));
+
+        mockMvc.perform(post("/patients/1/notes/testNote")
+                        .param("note", "note")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(model().attributeExists("patients"))
+                .andExpect(view().name("patientListPage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateNoteWhenErrorInTheFormTest() throws Exception {
+        when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(200)));
+
+        mockMvc.perform(post("/patients/1/notes/testNote"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(view().name("updateNotePage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateNoteWhenNoteIsNotUpdatedTest() throws Exception {
+        when(patientNoteProxy.updateNote(anyInt(), anyString(), anyString())).thenReturn(new ResponseEntity<>(HttpStatusCode.valueOf(404)));
+
+        mockMvc.perform(post("/patients/1/notes/testNote")
+                        .param("note", "note")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(view().name("updateNotePage"))
                 .andExpect(status().isOk());
     }
 }
