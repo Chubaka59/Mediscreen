@@ -42,10 +42,10 @@
       </thead>
       <tbody>
       <tr th:each="note : ${notes}">
-        <td style="width: 25%" th:text="${note.date}"></td>
+        <td style="width: 25%" th:text="${#temporals.format(note.date, 'dd-MM-yyyy hh:mm')}"></td>
         <td th:utext="${note.note}"></td>
         <td style="width: 10%" class="text-center">
-          <a th:href="@{/patients/{patientId}/notes/{noteId}(patientId=${note.patientId}, noteId=${note.id})}">Update</a>
+          <a th:href="@{/patients/{patientId}/notes/{noteId}(patientId=${note.patientId}, noteId=${note.noteId})}">Update</a>
         </td>
       </tr>
       </tbody>

@@ -78,10 +78,9 @@ public class ClientUIController {
 
     @GetMapping("/patients/{id}/notes")
     public String showPatientNotePage(@PathVariable("id") Integer id, NoteBean note, Model model){
-        PatientBean patientBean = patientProxy.getPatient(id);
         List<NoteBean> noteBeanList = patientNoteProxy.getAllPatientNote(id);
         noteBeanList.forEach(s -> s.setNote(s.getNote().replaceAll("\r\n", "<br />")));
-        model.addAttribute("patientBean", patientBean);
+        model.addAttribute("patientBean", patientProxy.getPatient(id));
         model.addAttribute("notes", noteBeanList);
         return "patientNotePage";
     }
