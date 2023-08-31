@@ -1,7 +1,9 @@
 package com.openclassrooms.mediscreenclientui.controller;
 
+import com.openclassrooms.mediscreenclientui.bean.AnalysisBean;
 import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
+import com.openclassrooms.mediscreenclientui.proxy.AnalysisProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientNoteProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientProxy;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,8 @@ public class ClientUIControllerTest {
     PatientProxy patientProxy;
     @Mock
     PatientNoteProxy patientNoteProxy;
+    @Mock
+    AnalysisProxy analysisProxy;
     @Mock
     Model model;
     @Mock
@@ -272,6 +276,21 @@ public class ClientUIControllerTest {
 
         //WHEN we call the method
         String actualString = clientUIController.updateNote(1, "1", noteBean, result, model);
+
+        //THEN we get the correct string
+        assertEquals(expectedString, actualString);
+    }
+
+    @Test
+    public void showAnalysisPageTest() {
+        //GIVEN we should get this string
+        String expectedString = "AnalysisPage";
+        when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
+        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
+        when(analysisProxy.getAnalysisFromPatient(any(AnalysisBean.class), anyInt())).thenReturn("test");
+
+        //WHEN we call this method
+        String actualString = clientUIController.showAnalysisPage(1, model);
 
         //THEN we get the correct string
         assertEquals(expectedString, actualString);

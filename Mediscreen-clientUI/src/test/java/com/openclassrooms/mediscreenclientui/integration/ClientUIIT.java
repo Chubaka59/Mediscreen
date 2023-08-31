@@ -1,7 +1,9 @@
 package com.openclassrooms.mediscreenclientui.integration;
 
+import com.openclassrooms.mediscreenclientui.bean.AnalysisBean;
 import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
+import com.openclassrooms.mediscreenclientui.proxy.AnalysisProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientNoteProxy;
 import com.openclassrooms.mediscreenclientui.proxy.PatientProxy;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -32,6 +35,8 @@ public class ClientUIIT {
     private PatientProxy patientProxy;
     @MockBean
     private PatientNoteProxy patientNoteProxy;
+    @MockBean
+    private AnalysisProxy analysisProxy;
 
     @Test
     public void getAllPatientsTest() throws Exception {
@@ -252,6 +257,20 @@ public class ClientUIIT {
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(view().name("updateNotePage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void showAnalysisPage() throws Exception {
+        when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
+        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
+        when(analysisProxy.getAnalysisFromPatient(any(AnalysisBean.class), anyInt())).thenReturn("test");
+
+        mockMvc.perform(get("/patients/1/analyze"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(model().attributeExists("analysis"))
+                .andExpect(model().attributeExists("patientName"))
+                .andExpect(view().name("AnalysisPage"))
                 .andExpect(status().isOk());
     }
 }
