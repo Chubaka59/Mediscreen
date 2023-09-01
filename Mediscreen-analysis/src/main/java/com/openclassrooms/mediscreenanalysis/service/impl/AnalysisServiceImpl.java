@@ -56,6 +56,6 @@ public class AnalysisServiceImpl implements AnalysisService {
                 return "Early Onset";
             }
         }
-        return "unknown";
+        return "Unknown";
     }
 }
