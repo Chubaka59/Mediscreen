@@ -1,4 +1,4 @@
-package com.openclassrooms.mediscreenanalysis.model;
+package com.openclassrooms.mediscreenanalysis.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Note {
+@AllArgsConstructor
+public class NoteBean {
     private String noteId;
     private int patientId;
     private LocalDateTime date;

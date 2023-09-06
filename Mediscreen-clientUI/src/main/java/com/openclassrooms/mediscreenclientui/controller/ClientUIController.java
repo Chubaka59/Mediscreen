@@ -1,6 +1,5 @@
 package com.openclassrooms.mediscreenclientui.controller;
 
-import com.openclassrooms.mediscreenclientui.bean.AnalysisBean;
 import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
 import com.openclassrooms.mediscreenclientui.proxy.AnalysisProxy;
@@ -125,9 +124,7 @@ public class ClientUIController {
     @GetMapping("/patients/{id}/analyze")
     public String showAnalysisPage(@PathVariable("id") Integer patientId, Model model) {
         PatientBean patientBean = patientProxy.getPatient(patientId);
-        List<NoteBean> noteBeanList = patientNoteProxy.getAllPatientNote(patientId);
-        AnalysisBean analysisBean = new AnalysisBean(patientBean, noteBeanList);
-        model.addAttribute("analysis", analysisProxy.getAnalysisFromPatient(analysisBean, patientId));
+        model.addAttribute("analysis", analysisProxy.getAnalysisFromPatient(patientId));
         model.addAttribute("patientName", patientBean.getFullName());
         return "AnalysisPage";
     }

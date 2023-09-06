@@ -1,7 +1,5 @@
 package com.openclassrooms.mediscreenanalysis.service;
 
-import com.openclassrooms.mediscreenanalysis.model.Analysis;
-import com.openclassrooms.mediscreenanalysis.model.Note;
 import com.openclassrooms.mediscreenanalysis.service.impl.AnalysisServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
