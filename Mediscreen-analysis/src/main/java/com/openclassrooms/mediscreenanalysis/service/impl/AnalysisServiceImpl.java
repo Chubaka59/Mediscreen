@@ -24,8 +24,8 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     /**
      * check if the specified keywords appeared in the note list and increment the count.
-     * @param noteList
-     * @return
+     * @param noteList the note list to analyze
+     * @return an int which is the count
      */
     private int countKeywords(List<String> noteList) {
         int count = 0;
