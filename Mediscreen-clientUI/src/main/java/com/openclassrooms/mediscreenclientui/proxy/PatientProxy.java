@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 // Feign config when running locally
-//@FeignClient(name = "mediscreen-patient", url = "localhost:9001")
+@FeignClient(name = "mediscreen-patient", url = "localhost:9001")
 //Feign config when running with docker
-@FeignClient(name = "mediscreen-patient", url = "mediscreen-patient:9001")
+//@FeignClient(name = "mediscreen-patient", url = "mediscreen-patient:9001")
 public interface PatientProxy {
     @GetMapping(value = "/patients")
     List<PatientBean> getAllPatients();
