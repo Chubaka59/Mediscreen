@@ -1,6 +1,5 @@
 package com.openclassrooms.mediscreenclientui.controller;
 
-import com.openclassrooms.mediscreenclientui.bean.AnalysisBean;
 import com.openclassrooms.mediscreenclientui.bean.NoteBean;
 import com.openclassrooms.mediscreenclientui.bean.PatientBean;
 import com.openclassrooms.mediscreenclientui.proxy.AnalysisProxy;
@@ -26,17 +25,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class ClientUIControllerTest {
     @InjectMocks
-    ClientUIController clientUIController;
+    private ClientUIController clientUIController;
     @Mock
-    PatientProxy patientProxy;
+    private PatientProxy patientProxy;
     @Mock
-    PatientNoteProxy patientNoteProxy;
+    private PatientNoteProxy patientNoteProxy;
     @Mock
-    AnalysisProxy analysisProxy;
+    private AnalysisProxy analysisProxy;
     @Mock
-    Model model;
+    private Model model;
     @Mock
-    BindingResult result;
+    private BindingResult result;
 
     @Test
     public void getAllPatientsTest(){
@@ -286,8 +285,7 @@ public class ClientUIControllerTest {
         //GIVEN we should get this string
         String expectedString = "AnalysisPage";
         when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
-        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
-        when(analysisProxy.getAnalysisFromPatient(any(AnalysisBean.class), anyInt())).thenReturn("test");
+        when(analysisProxy.getAnalysisFromPatient(anyInt())).thenReturn("test");
 
         //WHEN we call this method
         String actualString = clientUIController.showAnalysisPage(1, model);

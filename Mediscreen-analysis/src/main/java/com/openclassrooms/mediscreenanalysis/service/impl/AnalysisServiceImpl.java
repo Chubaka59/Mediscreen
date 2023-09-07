@@ -7,6 +7,7 @@ import com.openclassrooms.mediscreenanalysis.model.AnalysisResult;
 import com.openclassrooms.mediscreenanalysis.proxy.PatientNoteProxy;
 import com.openclassrooms.mediscreenanalysis.proxy.PatientProxy;
 import com.openclassrooms.mediscreenanalysis.service.AnalysisService;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AnalysisServiceImpl implements AnalysisService {
     @Autowired
-    private PatientProxy patientProxy;
+    private final PatientProxy patientProxy;
     @Autowired
-    private PatientNoteProxy patientNoteProxy;
+    private final PatientNoteProxy patientNoteProxy;
 
     /**
      * check if the specified keywords appeared in the note list and increment the count.
