@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  clientui:
+    image: mediscreen-clientui-demo
+    hostname: mediscreen-clientui
+    build:
+      context: .
+      dockerfile: Mediscreen-clientUI/Dockerfile
+    ports:
+      - 8080:8080
+    restart: always
+
+  patient:
+    image: mediscreen-patient-demo
+    hostname: mediscreen-patient
+    build:
+      context: .
+      dockerfile: Mediscreen-patient/Dockerfile
+    ports:
+      - 9001:9001
+    restart: always
+
+  patientnote:
+    image: mediscreen-patientnote-demo
+    hostname: mediscreen-patientnote
+    build:
+      context: .
+      dockerfile: Mediscreen-patientNote/Dockerfile
+    ports:
+      - 9002:9002
+    restart: always
+
+  analysis:
+    image: mediscreen-analysis-demo
+    hostname: mediscreen-analysis
+    build:
+      context: .
+      dockerfile: Mediscreen-analysis/Dockerfile
+    ports:
+      - 9003:9003
+    restart: always
