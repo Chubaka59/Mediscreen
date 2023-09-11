@@ -48,6 +48,12 @@ public class AnalysisServiceImpl implements AnalysisService {
         }
 
         List<NoteBean> noteBeanList = patientNoteProxy.getAllPatientNote(id);
+
+        //return none if list is empty, this avoids to enter the loop
+        if (noteBeanList.isEmpty()) {
+            return AnalysisResult.None.toString();
+        }
+
         List<String> noteList = noteBeanList.stream().map(NoteBean::getNote).toList();
 
         int count = countKeywords(noteList);
