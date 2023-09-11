@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -202,5 +203,18 @@ public class AnalysisIT {
         mockMvc.perform(get("/patients/1/analysis"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getAnalysisWhenNoteListIsEmptyTest() throws Exception {
+        when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
+        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
+
+        MvcResult result = mockMvc.perform(get("/patients/1/analysis"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertTrue(result.getResponse().getContentAsString().contains(AnalysisResult.None.toString()));
     }
 }

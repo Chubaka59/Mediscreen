@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -212,5 +213,19 @@ public class AnalysisServiceTest {
 
         //WHEN we analyze THEN an exception is thrown
         assertThrows(PatientNotFoundException.class, () -> analysisService.getAnalysis(1));
+    }
+
+    @Test
+    public void getAnalysisWhenNoteListIsEmptyTest() {
+        //GIVEN the note list will be empty
+        when(patientProxy.getPatient(anyInt())).thenReturn(new PatientBean());
+        when(patientNoteProxy.getAllPatientNote(anyInt())).thenReturn(new ArrayList<>());
+        String expectedString = AnalysisResult.None.toString();
+
+        //WHEN we analyze
+        String actualString = analysisService.getAnalysis(1);
+
+        //THEN we get the correct return
+        assertEquals(expectedString, actualString);
     }
 }
