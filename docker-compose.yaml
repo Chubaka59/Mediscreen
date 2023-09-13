@@ -1,14 +1,32 @@
 version: '3'
 
 services:
+  mysql:
+    image: mysql:8.1
+    hostname: mysql
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    restart: always
+
+  mongodb:
+    image: mongo
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    restart: always
+
   clientui:
     image: mediscreen-clientui-demo
     hostname: mediscreen-clientui
     build:
       context: .
       dockerfile: Mediscreen-clientUI/Dockerfile
+    env_file:
+        - .env
     ports:
-      - 8080:8080
+      - "8080:8080"
     restart: always
 
   patient:
@@ -17,9 +35,13 @@ services:
     build:
       context: .
       dockerfile: Mediscreen-patient/Dockerfile
+    env_file:
+      - .env
     ports:
-      - 9001:9001
+      - "9001:9001"
     restart: always
+    depends_on:
+      - mysql
 
   patientnote:
     image: mediscreen-patientnote-demo
@@ -27,9 +49,13 @@ services:
     build:
       context: .
       dockerfile: Mediscreen-patientNote/Dockerfile
+    env_file:
+      - .env
     ports:
-      - 9002:9002
+      - "9002:9002"
     restart: always
+    depends_on:
+      - mongodb
 
   analysis:
     image: mediscreen-analysis-demo
@@ -37,6 +63,8 @@ services:
     build:
       context: .
       dockerfile: Mediscreen-analysis/Dockerfile
+    env_file:
+      - .env
     ports:
-      - 9003:9003
+      - "9003:9003"
     restart: always
