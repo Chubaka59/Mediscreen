@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>ClientUIController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Mediscreen-coverage</a> &gt; <a href="../index.html" class="el_bundle">Mediscreen-clientUI</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mediscreenclientui.controller</a> &gt; <span class="el_source">ClientUIController.java</span></div><h1>ClientUIController.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mediscreenclientui.controller;
+
+import com.openclassrooms.mediscreenclientui.bean.NoteBean;
+import com.openclassrooms.mediscreenclientui.bean.PatientBean;
+import com.openclassrooms.mediscreenclientui.proxy.AnalysisProxy;
+import com.openclassrooms.mediscreenclientui.proxy.PatientNoteProxy;
+import com.openclassrooms.mediscreenclientui.proxy.PatientProxy;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
+@Controller
+<span class="fc" id="L23">public class ClientUIController {</span>
+    @Autowired
+    private PatientProxy patientProxy;
+    @Autowired
+    private PatientNoteProxy patientNoteProxy;
+    @Autowired
+    private AnalysisProxy analysisProxy;
+
+    @RequestMapping(&quot;/patients&quot;)
+    public String getAllPatients(Model model){
+<span class="fc" id="L33">        model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L34">        return &quot;patientListPage&quot;;</span>
+    }
+
+    @GetMapping(&quot;/addPatient&quot;)
+    public String showAddPage(PatientBean patient){
+<span class="fc" id="L39">        return &quot;addPatientPage&quot;;</span>
+    }
+
+    @PostMapping(&quot;/patients&quot;)
+    public String addPatient(@Valid PatientBean patient, BindingResult result, Model model){
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (result.hasErrors()){</span>
+<span class="fc" id="L45">            return &quot;addPatientPage&quot;;</span>
+        }
+<span class="fc" id="L47">        ResponseEntity&lt;PatientBean&gt; response = patientProxy.addPatient(patient);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if(response.getStatusCode() == HttpStatus.CREATED){</span>
+<span class="fc" id="L49">            model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L50">            return &quot;patientListPage&quot;;</span>
+        }
+<span class="fc" id="L52">        return &quot;addPatientPage&quot;;</span>
+    }
+
+    @GetMapping(&quot;/patients/{id}&quot;)
+    public String showUpdatePage(@PathVariable(&quot;id&quot;) Integer id, Model model){
+<span class="fc" id="L57">        model.addAttribute(&quot;patientBean&quot;, patientProxy.getPatient(id));</span>
+<span class="fc" id="L58">        return &quot;updatePatientPage&quot;;</span>
+    }
+
+    @PostMapping(&quot;/patients/{id}&quot;)
+    public String updatePatient(@PathVariable(&quot;id&quot;) Integer id, @Valid PatientBean patientBean,
+                                BindingResult result, Model model){
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (result.hasErrors()){</span>
+<span class="fc" id="L65">            return &quot;updatePatientPage&quot;;</span>
+        }
+<span class="fc" id="L67">        ResponseEntity&lt;PatientBean&gt; response = patientProxy.updatePatient(patientBean, id);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (response.getStatusCode() == HttpStatus.OK){</span>
+<span class="fc" id="L69">            model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L70">            return &quot;patientListPage&quot;;</span>
+        }
+<span class="fc" id="L72">        return &quot;updatePatientPage&quot;;</span>
+    }
+
+    @GetMapping(&quot;patients/{id}/delete&quot;)
+    public String deletePatient(@PathVariable(&quot;id&quot;) Integer id, Model model){
+<span class="fc" id="L77">        patientProxy.deletePatient(id);</span>
+<span class="fc" id="L78">        model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L79">        return &quot;patientListPage&quot;;</span>
+    }
+
+    @GetMapping(&quot;/patients/{id}/notes&quot;)
+    public String showPatientNotePage(@PathVariable(&quot;id&quot;) Integer id, NoteBean note, Model model){
+<span class="fc" id="L84">        List&lt;NoteBean&gt; noteBeanList = patientNoteProxy.getAllPatientNote(id);</span>
+<span class="pc" id="L85">        noteBeanList.forEach(s -&gt; s.setNote(s.getNote().replaceAll(&quot;\r\n&quot;, &quot;&lt;br /&gt;&quot;)));</span>
+<span class="fc" id="L86">        model.addAttribute(&quot;patientBean&quot;, patientProxy.getPatient(id));</span>
+<span class="fc" id="L87">        model.addAttribute(&quot;notes&quot;, noteBeanList);</span>
+<span class="fc" id="L88">        return &quot;patientNotePage&quot;;</span>
+    }
+
+    @PostMapping(&quot;/patients/{id}/notes&quot;)
+    public String addNote(@PathVariable(&quot;id&quot;) Integer id, @Valid NoteBean note, BindingResult result, Model model){
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (result.hasErrors()){</span>
+<span class="fc" id="L94">            return showPatientNotePage(id, note, model);</span>
+        }
+<span class="fc" id="L96">        ResponseEntity&lt;String&gt; response = patientNoteProxy.addNote(note, id);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if(response.getStatusCode() == HttpStatus.CREATED){</span>
+<span class="fc" id="L98">            model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L99">            return &quot;patientListPage&quot;;</span>
+        }
+<span class="fc" id="L101">        return showPatientNotePage(id, note, model);</span>
+    }
+
+    @GetMapping(&quot;/patients/{patientId}/notes/{noteId}&quot;)
+    public String showUpdateNotePage(@PathVariable(&quot;patientId&quot;) Integer patientId, @PathVariable(&quot;noteId&quot;) String noteId, Model model) {
+<span class="fc" id="L106">        model.addAttribute(&quot;noteBean&quot;, patientNoteProxy.getNoteById(patientId, noteId));</span>
+<span class="fc" id="L107">        return &quot;updateNotePage&quot;;</span>
+    }
+
+    @PostMapping(&quot;/patients/{patientId}/notes/{noteId}&quot;)
+    public String updateNote(@PathVariable(&quot;patientId&quot;) Integer patientId, @PathVariable(&quot;noteId&quot;) String noteId, @Valid NoteBean noteBean,
+                             BindingResult result, Model model) {
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (result.hasErrors()){</span>
+<span class="fc" id="L114">            return &quot;updateNotePage&quot;;</span>
+        }
+<span class="fc" id="L116">        ResponseEntity&lt;String&gt; response = patientNoteProxy.updateNote(patientId, noteId, noteBean.getNote());</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (response.getStatusCode() == HttpStatus.OK){</span>
+<span class="fc" id="L118">            model.addAttribute(&quot;patients&quot;, patientProxy.getAllPatients());</span>
+<span class="fc" id="L119">            return &quot;patientListPage&quot;;</span>
+        }
+<span class="fc" id="L121">        return &quot;updateNotePage&quot;;</span>
+    }
+
+    @GetMapping(&quot;/patients/{id}/analyze&quot;)
+    public String showAnalysisPage(@PathVariable(&quot;id&quot;) Integer patientId, Model model) {
+<span class="fc" id="L126">        PatientBean patientBean = patientProxy.getPatient(patientId);</span>
+<span class="fc" id="L127">        model.addAttribute(&quot;analysis&quot;, analysisProxy.getAnalysisFromPatient(patientId));</span>
+<span class="fc" id="L128">        model.addAttribute(&quot;patientName&quot;, patientBean.getFullName());</span>
+<span class="fc" id="L129">        return &quot;AnalysisPage&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

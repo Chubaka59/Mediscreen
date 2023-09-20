@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>AnalysisServiceImpl.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Mediscreen-coverage</a> &gt; <a href="../index.html" class="el_bundle">Mediscreen-analysis</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mediscreenanalysis.service.impl</a> &gt; <span class="el_source">AnalysisServiceImpl.java</span></div><h1>AnalysisServiceImpl.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mediscreenanalysis.service.impl;
+
+import com.openclassrooms.mediscreenanalysis.bean.NoteBean;
+import com.openclassrooms.mediscreenanalysis.bean.PatientBean;
+import com.openclassrooms.mediscreenanalysis.exception.PatientNotFoundException;
+import com.openclassrooms.mediscreenanalysis.model.AnalysisResult;
+import com.openclassrooms.mediscreenanalysis.proxy.PatientNoteProxy;
+import com.openclassrooms.mediscreenanalysis.proxy.PatientProxy;
+import com.openclassrooms.mediscreenanalysis.service.AnalysisService;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AnalysisServiceImpl implements AnalysisService {
+    @Autowired
+    private final PatientProxy patientProxy;
+    @Autowired
+    private final PatientNoteProxy patientNoteProxy;
+
+    /**
+     * check if the specified keywords appeared in the note list and increment the count.
+     * @param noteList the note list to analyze
+     * @return an int which is the count
+     */
+    private int countKeywords(List&lt;String&gt; noteList) {
+<span class="fc" id="L31">        int count = 0;</span>
+<span class="fc" id="L32">        List&lt;String&gt; keywordList = List.of(&quot;Hemoglobin A1C&quot;, &quot;Microalbumin&quot;, &quot;Height&quot;, &quot;Weight&quot;, &quot;Smoker&quot;, &quot;Abnormal&quot;, &quot;Cholesterol&quot;, &quot;Dizziness&quot;, &quot;Relapse&quot;, &quot;Reaction&quot;, &quot;AntiBodies&quot;);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        for (String keyword : keywordList) {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">            for (String note : noteList) {</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                if (StringUtils.containsIgnoreCase(note, keyword)) {</span>
+<span class="fc" id="L36">                    count += 1;</span>
+<span class="fc" id="L37">                    break;</span>
+                }
+<span class="fc" id="L39">            }</span>
+<span class="fc" id="L40">        }</span>
+<span class="fc" id="L41">        return count;</span>
+    }
+
+    public String getAnalysis(Integer id) {
+<span class="fc" id="L45">        PatientBean patientBean = patientProxy.getPatient(id);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (patientBean == null) {</span>
+<span class="fc" id="L47">            throw new PatientNotFoundException(id);</span>
+        }
+
+<span class="fc" id="L50">        List&lt;NoteBean&gt; noteBeanList = patientNoteProxy.getAllPatientNote(id);</span>
+
+        //return none if list is empty, this avoids to enter the loop
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (noteBeanList.isEmpty()) {</span>
+<span class="fc" id="L54">            return AnalysisResult.None.toString();</span>
+        }
+
+<span class="fc" id="L57">        List&lt;String&gt; noteList = noteBeanList.stream().map(NoteBean::getNote).toList();</span>
+
+<span class="fc" id="L59">        int count = countKeywords(noteList);</span>
+<span class="fc" id="L60">        return getAnalysisResult(patientBean, count);</span>
+    }
+
+    /**
+     * return the result of the analysis following the below table
+     *
+     * if the patient is more than thirty years old
+     * 0 &lt;= count &lt;= 1 result : None
+     * 2 &lt;= count &lt;= 5 result : Borderline
+     * 6 &lt;= count &lt;= 7 result : InDanger
+     * 8 &lt;= count      result : EarlyOnset
+     *
+     * if the patient is less than thirty and is a male
+     * 0 &lt;= count &lt;= 2 result : None
+     * 3 &lt;= count &lt;= 4 result : InDanger
+     * 5 &lt;= count      result : EarlyOnset
+     *
+     * if the patient is less than thirty and is a female
+     * 0 &lt;= count &lt;= 3 result : None
+     * 4 &lt;= count &lt;= 6 result : InDanger
+     * 7 &lt;= count      result : EarlyOnset
+     *
+     * @param patientBean the patient to analyze
+     * @param count int that has been count from the patient's notes
+     * @return the enum result of the analysis as a string
+     */
+    private static String getAnalysisResult(PatientBean patientBean, int count) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (patientBean.isMoreThanThirty()) {</span>
+<span class="pc bpc" id="L88" title="1 of 4 branches missed.">            if (0 &lt;= count &amp;&amp; count &lt;= 1) {</span>
+<span class="fc" id="L89">                return AnalysisResult.None.toString();</span>
+<span class="pc bpc" id="L90" title="1 of 4 branches missed.">            } else if (2 &lt;= count &amp;&amp; count &lt;= 5) {</span>
+<span class="fc" id="L91">                return AnalysisResult.Borderline.toString();</span>
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">            } else if (6 &lt;= count &amp;&amp; count &lt;= 7) {</span>
+<span class="fc" id="L93">                return AnalysisResult.InDanger.toString();</span>
+            } else  {
+<span class="fc" id="L95">                return AnalysisResult.EarlyOnset.toString();</span>
+            }
+        }
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (patientBean.isMale()) {</span>
+<span class="pc bpc" id="L99" title="1 of 4 branches missed.">            if (0 &lt;= count &amp;&amp; count &lt;= 2) {</span>
+<span class="fc" id="L100">                return AnalysisResult.None.toString();</span>
+<span class="pc bpc" id="L101" title="1 of 4 branches missed.">            } else if (3 &lt;= count &amp;&amp; count &lt;= 4) {</span>
+<span class="fc" id="L102">                return AnalysisResult.InDanger.toString();</span>
+            } else {
+<span class="fc" id="L104">                return AnalysisResult.EarlyOnset.toString();</span>
+            }
+        } else {
+<span class="pc bpc" id="L107" title="1 of 4 branches missed.">            if (0 &lt;= count &amp;&amp; count &lt;= 3) {</span>
+<span class="fc" id="L108">                return AnalysisResult.None.toString();</span>
+<span class="pc bpc" id="L109" title="1 of 4 branches missed.">            } else if (4 &lt;= count &amp;&amp; count &lt;= 6) {</span>
+<span class="fc" id="L110">                return AnalysisResult.InDanger.toString();</span>
+            } else {
+<span class="fc" id="L112">                return AnalysisResult.EarlyOnset.toString();</span>
+            }
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

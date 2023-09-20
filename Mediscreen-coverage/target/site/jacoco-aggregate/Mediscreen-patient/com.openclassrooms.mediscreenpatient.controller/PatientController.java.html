@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../jacoco-resources/report.gif" type="image/gif"/><title>PatientController.java</title><link rel="stylesheet" href="../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../index.html" class="el_report">Mediscreen-coverage</a> &gt; <a href="../index.html" class="el_bundle">Mediscreen-patient</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.mediscreenpatient.controller</a> &gt; <span class="el_source">PatientController.java</span></div><h1>PatientController.java</h1><pre class="source lang-java linenums">package com.openclassrooms.mediscreenpatient.controller;
+
+import com.openclassrooms.mediscreenpatient.dto.PatientDto;
+import com.openclassrooms.mediscreenpatient.model.Patient;
+import com.openclassrooms.mediscreenpatient.service.PatientService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+public class PatientController {
+    @Autowired
+    private final PatientService patientService;
+
+    @GetMapping(value = &quot;/patients&quot;)
+    public List&lt;Patient&gt; getAllPatients(){
+<span class="fc" id="L22">        return patientService.getAllPatient();</span>
+    }
+
+    @GetMapping(value = &quot;/patients/{id}&quot;)
+    public Patient getPatient(@PathVariable int id){
+<span class="fc" id="L27">        return patientService.getPatientById(id);</span>
+    }
+
+    @PostMapping(value = &quot;/patients&quot;)
+    public ResponseEntity&lt;PatientDto&gt; addPatient(@RequestBody PatientDto patient){
+<span class="fc" id="L32">        patientService.addPatient(patient);</span>
+<span class="fc" id="L33">        return new ResponseEntity&lt;&gt;(HttpStatus.CREATED);</span>
+    }
+
+    @PutMapping(value = &quot;/patients/{id}&quot;)
+    public ResponseEntity&lt;PatientDto&gt; updatePatient(@PathVariable(&quot;id&quot;) Integer id, @RequestBody PatientDto patientDto){
+<span class="fc" id="L38">        patientService.updatePatient(id, patientDto);</span>
+<span class="fc" id="L39">        return new ResponseEntity&lt;&gt;(HttpStatus.OK);</span>
+    }
+
+    @GetMapping(value = &quot;/patients/{id}/delete&quot;)
+    public ResponseEntity&lt;Patient&gt; deletePatient(@PathVariable(&quot;id&quot;) Integer id){
+<span class="fc" id="L44">        patientService.deletePatient(id);</span>
+<span class="fc" id="L45">        return new ResponseEntity&lt;&gt;(HttpStatus.OK);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
